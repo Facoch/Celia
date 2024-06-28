@@ -931,7 +931,7 @@ function love.keypressed(key, scancode, isrepeat)
 	-- 	pico8.clipboard = love.system.getClipboardText()
 	-- elseif pico8.can_pause and (key == "pause" or key == "p") then
 	-- 	paused = not paused
-	elseif key == "m" then 
+	elseif key == "n" then 
 		monkeyMode = not monkeyMode
 	elseif key == "f1" or key == "f6" or key == "s" then
 		-- screenshot
