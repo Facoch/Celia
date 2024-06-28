@@ -23,6 +23,8 @@ local initialcartname = nil -- used by esc
 local love_args = nil -- luacheck: no unused
 local tastool = nil
 
+monkeyMode = true
+
 pico8 = {
 	clip = nil,
 	fps = 30,
@@ -599,7 +601,7 @@ function love.draw()
 	love.graphics.setShader(pico8.draw_shader)
 
 	tastool:draw()
-
+	
 	-- draw the contents of pico screen to our screen
 	flip_screen()
 end
@@ -929,7 +931,9 @@ function love.keypressed(key, scancode, isrepeat)
 	-- 	pico8.clipboard = love.system.getClipboardText()
 	-- elseif pico8.can_pause and (key == "pause" or key == "p") then
 	-- 	paused = not paused
-	elseif key == "f1" or key == "f6" then
+	elseif key == "m" then 
+		monkeyMode = not monkeyMode
+	elseif key == "f1" or key == "f6" or key == "s" then
 		-- screenshot
 		local filename = cartname .. "-" .. os.time() .. ".png"
 		local screenshot = love.graphics.captureScreenshot(filename)
@@ -1009,6 +1013,85 @@ function love.graphics.point(x, y)
 	love.graphics.rectangle("fill", x, y, 1, 1)
 end
 
+
+distanceToGoal = 1000;
+PB= 1000;
+
+function evalCB(img) -- use as callback in screenshot
+	-- this is heavily dependant on screen resolution
+	-- print(img:getDimensions())
+
+	-- local r, g, b, a = img:getPixel(290,670)
+			
+	for x_screen =260,980 do 
+		for y_screen=25,740 do
+			local r, g, b, a = img:getPixel(x_screen,y_screen)
+			-- character is a green square
+			if(r<0.1 and g>0.85 and g<0.95 and b>0.27 and b<0.38) then
+				-- objective: 850 490
+				-- manhattan distance
+				distanceToGoal= (math.abs(850-x_screen)+math.abs(490-y_screen))
+				
+			end
+		end 
+	end
+end
+
+
+-- fully random inputs with no special logic
+function randomkey()
+	local available= {"l","l","l","k","up","down","left","right","x","c"}
+	if(math.random(5)==1) then
+		local res = math.random(10)		
+		love.keypressed(available[res],available[res],false); 
+		if(available[res]=="l") then
+			love.graphics.captureScreenshot( evalCB )
+		end
+	end
+	return
+end
+
+
+-- add random inputs every five frame
+frame = 0
+function monkey()
+	-- for this trick we only care about going right/up
+	local useful= {"up","right","x","c"}
+	frame = frame +1;
+	if(frame%5==0) then
+		for i=1,4 do
+			if(math.random()>=0.5) then 
+				love.keypressed(useful[i],useful[i],false)
+			end
+		end
+		love.keypressed("l","l",false)
+	else 
+		love.keypressed("l","l",false)
+	end
+	
+	-- trigger a screenshot which is passed to the eval 
+	-- function evalCB
+	love.graphics.captureScreenshot( evalCB )
+	
+	if distanceToGoal<PB then 
+		PB = distanceToGoal
+		print(PB)
+		if (PB< 300) then
+			love.keypressed("m","m",false)
+		end	
+	end
+
+	if(frame>500 and distanceToGoal>700) then 
+		frame =0;
+		distanceToGoal= 1000;
+		tastool:push_undo_state()
+		tastool:full_reset()
+	end
+	return
+end
+
+
+
 function love.run()
 	if love.load then
 		love.load(love.arg.parseGameArguments(arg), arg)
@@ -1073,6 +1156,12 @@ function love.run()
 			-- reset mouse wheel
 			pico8.mwheel = 0
 		end
+		
+		-- Automatically ADD INPUTS HERE
+		
+		if (monkeyMode) then 
+			monkey()
+		end 
 
 		if love.timer then
 			love.timer.sleep(0.001)
