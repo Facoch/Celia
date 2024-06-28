@@ -1,4 +1,17 @@
-Celia
+Celia - Automated TAS
+--------
+
+This is a quick and dirty Hack of Celia, meant to automatically try to perform a spike jump on the first screen of Celeste Tech Training for the pico8. 
+Currently, it only has a random agent adding random inputs to the TAS every fifth frame automatically. It checks the distance from the goal position (beyond the first spike jump) and if it's near enough it saves the TAS file. 
+
+In the first tests, it managed to do a spike jump but has not managed yet to reach the other side of the spikes (it does not dash correctly to cross the spikes after doing the jump). 
+
+Coded during Dagstuhl Seminar 24261: Computational Creativity for Game Development. 
+Team: Mike Cook, Maren Awiszus, Filippo Carnovalini, M Charity, and Alex Dockhorn 
+
+## Control (added to Celia's controls)
+* __N__ -  Enable/disable the random agent
+
 --------
 
 A PICO-8 TAS framework based on [picolove](https://github.com/picolove/picolove)
@@ -64,6 +77,7 @@ On the right, you'll see the pianoroll, which shows the inputs in the frames aro
 * __F4__ - stop gif recording
 * __F6__ - take screenshot
 * __Ctrl + R__ - reload cart and tas tool (Warning: this cannot be undone!)
+* __N__ -  Enable/disable the random agent
 
 ### Visual selection mode
 Visual selection mode allows you to perform operations on a contiguous range of inputs. The selected range will always start with the current frame (highlighted blue on the piano roll), and contain all subsequent frames (highlighted gray). You can always exit visual selection mode, by making the selection empty, or pressing __ESC__.
