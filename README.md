@@ -6,6 +6,10 @@ Currently, it only has a random agent adding random inputs to the TAS every fift
 
 In the first tests, it managed to do a spike jump but has not managed yet to reach the other side of the spikes (it does not dash correctly to cross the spikes after doing the jump). 
 
+To try it, install LÖVE, clone the repository, then run
+`<path to your love executable> . ctt.p8` from a terminal/command line in the project root directory. 
+you should see immediately the automatic tas process. Press n to stop it.
+
 Coded during Dagstuhl Seminar 24261: Computational Creativity for Game Development. 
 Team: Mike Cook, Maren Awiszus, Filippo Carnovalini, M Charity, and Alex Dockhorn 
 
